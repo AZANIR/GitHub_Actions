@@ -1,0 +1,18 @@
+# Запуск workflow тільки при push у вказані гілки.
+# Корисно: не витрачати хвилини на push у тимчасові/фіч-гілки.
+
+name: Push на main/master
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Перевірка гілки
+        run: echo "Гілка: ${{ github.ref_name }}"

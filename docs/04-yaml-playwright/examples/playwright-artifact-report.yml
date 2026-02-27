@@ -1,0 +1,44 @@
+# Збереження HTML-звіту Playwright як артефакт та приклад завантаження в іншому job.
+# Звіт зберігається при успіху та при падінні (if: failure() || success() або if: always()).
+# У другому job (optional) показано download-artifact для подальшої обробки або публікації.
+
+name: Playwright Tests (звіт-артефакт)
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/playwright-e2e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+
+      - name: Save report
+        uses: actions/upload-artifact@v4
+        if: failure() || success()
+        with:
+          name: playwright-html-report
+          path: examples/playwright-e2e/playwright-report/
+
+  # Опційний job: завантажити артефакт звіту (наприклад для публікації на хостинг)
+  # consume-report:
+  #   needs: [test]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Get report
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: playwright-html-report
+  #     - name: List report files
+  #       run: ls -la playwright-html-report/

@@ -1,0 +1,25 @@
+# Запуск при створенні або оновленні Pull Request.
+# Можна обмежити гілки, у які відкривають PR (наприклад тільки main).
+
+name: Pull Request
+
+on:
+  pull_request:
+    # Опційно: тільки PR у ці гілки
+    branches:
+      - main
+      - master
+    # Опційно: ігнорувати певні гілки-джерела
+    # branches-ignore:
+    #   - 'deps/**'
+
+jobs:
+  pr-check:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Інформація про PR
+        run: |
+          echo "Подія: ${{ github.event_name }}"
+          echo "Базова гілка: ${{ github.base_ref }}"
+          echo "Гілка PR: ${{ github.head_ref }}"

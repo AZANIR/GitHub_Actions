@@ -1,0 +1,14 @@
+{
+  "name": "cypress-e2e-demo",
+  "version": "1.0.0",
+  "description": "Мінімальний Cypress E2E проект для навчального репозиторію GitHub Actions",
+  "private": true,
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "e2e:ci": "cypress run --browser chrome"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.0"
+  }
+}

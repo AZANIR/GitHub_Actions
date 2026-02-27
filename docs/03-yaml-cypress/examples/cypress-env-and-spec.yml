@@ -1,0 +1,27 @@
+# Передача змінних середовища в Cypress та запуск конкретного spec-файлу.
+# env — один рядок, пари через кому (key=value).
+# spec — один файл або кілька (через пробіл/перенос), можна glob.
+
+name: Cypress E2E (env + spec)
+
+on: push
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-22.04
+    env:
+      # Глобальні змінні для всього job (не передавати паролі — використовувати Secrets)
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cypress run з env та spec
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: examples/cypress-e2e
+          browser: chrome
+          env: baseUrl=https://example.com,viewportWidth=1280
+          spec: cypress/e2e/smoke.cy.js
+          # Кілька spec: spec: |
+          #   cypress/e2e/spec-a.cy.js
+          #   cypress/e2e/spec-b.cy.js

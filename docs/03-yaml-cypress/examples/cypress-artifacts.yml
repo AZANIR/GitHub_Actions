@@ -1,0 +1,38 @@
+# Після прогону Cypress зберегти скріншоти та відео як артефакти GitHub.
+# Артефакти можна завантажити з вкладки Run у Actions для розбору падань.
+# working-directory має відповідати місцю, де лежить Cypress-проект.
+
+name: Cypress E2E (з артефактами)
+
+on: push
+
+jobs:
+  cypress-run:
+    name: Cypress + артефакти
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: examples/cypress-e2e
+          browser: chrome
+
+      # Завантажити скріншоти (зберігаються при падінні тестів)
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: examples/cypress-e2e/cypress/screenshots
+          if-no-files-found: ignore
+
+      # Завантажити відео прогону
+      - name: Upload videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: examples/cypress-e2e/cypress/videos
+          if-no-files-found: ignore

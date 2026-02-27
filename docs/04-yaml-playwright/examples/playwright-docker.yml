@@ -1,0 +1,44 @@
+# Запуск Playwright у Docker-контейнері (офіційний образ Microsoft).
+# Браузери вже встановлені — не потрібно playwright install --with-deps.
+# Версію образу (v1.49.0-jammy) варто узгоджувати з версією Playwright у package.json.
+
+name: Playwright Tests (Docker)
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  playwright:
+    name: Playwright in Docker
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.49.0-jammy
+    defaults:
+      run:
+        working-directory: examples/playwright-e2e
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      # У контейнері браузери вже є — тільки запуск тестів
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: examples/playwright-e2e/playwright-report/
+          retention-days: 30

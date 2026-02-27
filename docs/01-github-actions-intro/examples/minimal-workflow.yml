@@ -1,0 +1,26 @@
+# Мінімальний workflow для ознайомлення зі структурою GitHub Actions.
+# Розмістити у репозиторії як: .github/workflows/minimal-workflow.yml
+# Запуск: при будь-якому push у репозиторій.
+
+name: Мінімальний workflow
+
+# Подія, що запускає workflow (тут — будь-який push)
+on: push
+
+jobs:
+  # Один job з ідентифікатором "hello"
+  hello:
+    name: Привіт з CI
+    # Runner: Ubuntu 22.04 (хостана GitHub)
+    runs-on: ubuntu-22.04
+    steps:
+      # Крок 1: отримати код репозиторію (готова action)
+      - name: Checkout коду
+        uses: actions/checkout@v4
+
+      # Крок 2: виконати команду в shell
+      - name: Вивести привітання
+        run: |
+          echo "Workflow запущено успішно!"
+          echo "Гілка: ${{ github.ref_name }}"
+          echo "Коміт: ${{ github.sha }}"

@@ -1,0 +1,18 @@
+# Запуск Cypress у браузері Chrome замість Electron.
+
+name: Cypress E2E (Chrome)
+
+on: push
+
+jobs:
+  cypress-chrome:
+    name: E2E on Chrome
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cypress run (Chrome)
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: examples/cypress-e2e
+          browser: chrome

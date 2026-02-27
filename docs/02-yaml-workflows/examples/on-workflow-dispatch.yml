@@ -1,0 +1,26 @@
+# Тільки ручний запуск (кнопка "Run workflow" у вкладці Actions).
+# Дозволяє передати вхідні параметри (inputs) для гнучкості.
+
+name: Ручний запуск
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Середовище'
+        required: true
+        default: 'staging'
+      run_tests:
+        description: 'Запустити тести'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  manual:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Показати введені значення
+        run: |
+          echo "Середовище: ${{ github.event.inputs.environment }}"
+          echo "Запустити тести: ${{ github.event.inputs.run_tests }}"

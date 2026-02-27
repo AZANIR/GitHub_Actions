@@ -1,0 +1,31 @@
+# Запуск workflow вручну (workflow_dispatch) та за розкладом (schedule).
+# Розмістити як: .github/workflows/manual-and-schedule.yml
+
+name: Ручний та за розкладом
+
+on:
+  # Запуск вручну з вкладки Actions у репозиторії
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Середовище (staging/production)'
+        required: true
+        default: 'staging'
+
+  # Запуск за розкладом (cron у UTC): щодня о 06:00 та 18:00
+  schedule:
+    - cron: '0 6,18 * * *'
+
+jobs:
+  run:
+    name: Запуск
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Інформація про запуск
+        run: |
+          echo "Тригер: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Середовище (введене вручну): ${{ github.event.inputs.environment }}"
+          else
+            echo "Запуск за розкладом (schedule)"
+          fi

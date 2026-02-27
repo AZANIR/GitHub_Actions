@@ -1,0 +1,22 @@
+# Запуск Cypress у Docker-контейнері (офіційний образ з браузерами).
+# Однакове середовище та ізоляція; опція --user 1001 для сумісності з правами.
+
+name: Cypress E2E (Docker)
+
+on: push
+
+jobs:
+  cypress-run:
+    name: Cypress in Docker
+    runs-on: ubuntu-22.04
+    container:
+      image: cypress/browsers:latest
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: examples/cypress-e2e
+          browser: chrome

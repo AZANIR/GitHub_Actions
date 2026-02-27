@@ -1,0 +1,20 @@
+# Якщо зміни торкнулися лише файлів з paths-ignore, workflow НЕ запускається.
+# Якщо змінився хоч один файл поза цими шляхами — workflow запускається.
+# Економія хвилин: не запускати тести при оновленні лише документації.
+
+name: Ігнорування шляхів
+
+on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.gitignore'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Зміни не в docs/md — запускаємо збірку
+        run: echo "Workflow активовано змінами у коді"

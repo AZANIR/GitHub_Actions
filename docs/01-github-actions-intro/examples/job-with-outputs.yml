@@ -1,0 +1,31 @@
+# Приклад job з виходами (outputs): один job генерує значення,
+# інший job використовує його через needs.
+# Розмістити як: .github/workflows/job-with-outputs.yml
+
+name: Job з виходами
+
+on: push
+
+jobs:
+  # Перший job: підготовка даних
+  prepare:
+    name: Підготовка
+    runs-on: ubuntu-22.04
+    outputs:
+      # Змінна "build_id" буде доступна в інших jobs як needs.prepare.outputs.build_id
+      build_id: ${{ steps.generate.outputs.value }}
+    steps:
+      - name: Згенерувати ідентифікатор збірки
+        id: generate
+        run: |
+          echo "value=build-${{ github.run_id }}-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+  # Другий job: залежить від prepare, використовує його вихід
+  use-output:
+    name: Використання виходу
+    needs: [prepare]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Вивести ідентифікатор збірки
+        run: |
+          echo "Ідентифікатор збірки: ${{ needs.prepare.outputs.build_id }}"

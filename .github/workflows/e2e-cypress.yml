@@ -1,0 +1,41 @@
+# Робочий workflow: запуск Cypress E2E тестів з цього репозиторію.
+# Запуск при push та pull_request на main/master.
+# Результати: відео та скріншоти зберігаються як артефакти при падінні/завжди.
+
+name: E2E Cypress
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  cypress:
+    name: Cypress E2E
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cypress run (Chrome)
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: examples/cypress-e2e
+          browser: chrome
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: examples/cypress-e2e/cypress/screenshots
+          if-no-files-found: ignore
+
+      - name: Upload videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: examples/cypress-e2e/cypress/videos
+          if-no-files-found: ignore
